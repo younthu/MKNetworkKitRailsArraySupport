@@ -38,18 +38,25 @@
 }
 
 - (NSString *)escapeValueForURLParameter:(NSString *)valueToEscape {
+    NSMutableCharacterSet *charSet = [[NSCharacterSet URLQueryAllowedCharacterSet] mutableCopy];
+    [charSet removeCharactersInString:@"+"];
+    
     if (![valueToEscape isKindOfClass:[NSString class]]) {
         id v = valueToEscape;
-        return [[v stringValue] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]   ];
+        return [[v stringValue] stringByAddingPercentEncodingWithAllowedCharacters:charSet   ];
     }
-    return [valueToEscape stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]   ];
+    return [valueToEscape stringByAddingPercentEncodingWithAllowedCharacters: charSet];
 }
 @end
 
 @implementation OperationSupportRailsArray
+
 - (NSString*)encodedPostDataString {
     NSString *returnValue = @"";
-    if(self.postDataEncoding == MKNKPostDataEncodingTypeURL){
+    if (([self.HTTPMethod isEqualToString:@"GET"] ||
+         [self.HTTPMethod isEqualToString:@"DELETE"] ||
+         nil == self.HTTPMethod) &&
+        self.postDataEncoding == MKNKPostDataEncodingTypeURL){
         returnValue = [[self valueForKey:@"fieldsToBePosted"] serializeToQueryString];
     }else{
         returnValue = [super encodedPostDataString];
