@@ -27,6 +27,8 @@ So, i write some code to support it.
 
 # How to use it
 
+1. Include OperationSupportRailsArray.h &OperationSupportRailsArray.m into your project.
+   
 1. Register operation to engine
 
    ~~~objc
